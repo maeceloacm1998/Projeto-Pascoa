@@ -6,6 +6,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.TransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,9 +21,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +43,7 @@ import coil.request.ImageRequest
 import com.marcelodev.projetopascoa.R
 import com.marcelodev.projetopascoa.components.habitListener.HabitListener
 import com.marcelodev.projetopascoa.components.options.Options
+import com.marcelodev.projetopascoa.feature.config.ConfigViewModelEventState.OnCloseMaps
 import com.marcelodev.projetopascoa.feature.config.ConfigViewModelEventState.OnGoBackMenu
 import com.marcelodev.projetopascoa.ui.theme.Background
 import com.marcelodev.projetopascoa.ui.theme.BackgroundHeader
@@ -110,7 +118,7 @@ fun ConfigRoute(
                 .background(Background)
         ) {
             // MAPA
-            AnimatedVisibility(uiState.optionSelected != null) {
+            AnimatedVisibility(uiState.optionSelected != null && !uiState.isMaps) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -119,7 +127,7 @@ fun ConfigRoute(
                     Column(
                         modifier = Modifier
                             .padding(15.dp)
-                            .clickable {  },
+                            .clickable { onEvent(ConfigViewModelEventState.OnOpenMaps) },
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
@@ -140,8 +148,21 @@ fun ConfigRoute(
                 }
             }
 
+            AnimatedVisibility(uiState.isMaps) {
+                BackHandler {
+                    onEvent(OnCloseMaps)
+                }
+
+                MapScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                )
+            }
+
             // OPTIONS
-            AnimatedVisibility(uiState.isMenuHabitListenerDialog) {
+            AnimatedVisibility(uiState.isMenuHabitListenerDialog && !uiState.isMaps) {
                 // CHALLENGERS
                 Options(
                     modifier = Modifier
@@ -154,7 +175,7 @@ fun ConfigRoute(
             }
 
             // COLLECT EGGS
-            AnimatedVisibility(!uiState.isMenuHabitListenerDialog && !uiState.isFistHabitListenerDialog) {
+            AnimatedVisibility(!uiState.isMenuHabitListenerDialog && !uiState.isFistHabitListenerDialog && !uiState.isMaps) {
                 CollectEggs(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,15 +188,17 @@ fun ConfigRoute(
             }
 
             // DIALOG WITH HABIT LISTENER
-            HabitListener(
-                modifier = Modifier
-                    .weight(0.4f)
-                    .padding(end = 16.dp, top = 16.dp),
-                gifUrl = uiState.habitListenerGif,
-                message = uiState.habitListenerMessage,
-                showNextMessage = uiState.isFistHabitListenerDialog,
-                onClick = { onEvent(ConfigViewModelEventState.OnClickHabitListener) },
-            )
+            AnimatedVisibility(!uiState.isMaps) {
+                HabitListener(
+                    modifier = Modifier
+                        .weight(0.4f)
+                        .padding(end = 16.dp, top = 16.dp),
+                    gifUrl = uiState.habitListenerGif,
+                    message = uiState.habitListenerMessage,
+                    showNextMessage = uiState.isFistHabitListenerDialog,
+                    onClick = { onEvent(ConfigViewModelEventState.OnClickHabitListener) },
+                )
+            }
         }
     }
 }
@@ -229,6 +252,36 @@ fun CollectEggs(
             )
         }
     }
+}
+
+@Composable
+fun MapScreen(
+    modifier: Modifier = Modifier
+) {
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+
+    val transformableState = remember {
+        TransformableState { zoomChange, panChange, _ ->
+            scale *= zoomChange
+            offsetX += panChange.x
+            offsetY += panChange.y
+        }
+    }
+
+    Image(
+        painter = painterResource(id = R.drawable.maps_image),
+        contentDescription = "Mapa com zoom e arrasto",
+        modifier = modifier
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                translationX = offsetX,
+                translationY = offsetY
+            )
+            .transformable(state = transformableState)
+    )
 }
 
 @Preview

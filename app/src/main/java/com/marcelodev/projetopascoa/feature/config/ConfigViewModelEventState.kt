@@ -7,4 +7,6 @@ sealed class ConfigViewModelEventState {
     data class OnClickOption(val option: ConfigModel.OptionsModel) : ConfigViewModelEventState()
     data class OnCompletedOption(val option: ConfigModel.OptionsModel) : ConfigViewModelEventState()
     data object OnGoBackMenu : ConfigViewModelEventState()
+    data object OnOpenMaps : ConfigViewModelEventState()
+    data object OnCloseMaps : ConfigViewModelEventState()
 }

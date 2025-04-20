@@ -13,6 +13,7 @@ sealed interface ConfigViewModelUiState {
         val habitListenerGif: Int,
         val isFistHabitListenerDialog: Boolean = false,
         val isMenuHabitListenerDialog: Boolean = false,
+        val isMaps: Boolean = false,
     ) : ConfigViewModelUiState
 }
 
@@ -24,6 +25,7 @@ data class ConfigViewModelState(
     val habitListenerGif: Int = 0,
     val isFistHabitListenerDialog: Boolean = false,
     val isMenuHabitListenerDialog: Boolean = false,
+    val isMaps: Boolean = false,
 ) {
 
     fun toUiState(): ConfigViewModelUiState = ConfigViewModelUiState.Steps(
@@ -34,5 +36,6 @@ data class ConfigViewModelState(
         habitListenerGif = habitListenerGif,
         isFistHabitListenerDialog = isFistHabitListenerDialog,
         isMenuHabitListenerDialog = isMenuHabitListenerDialog,
+        isMaps = isMaps,
     )
 }

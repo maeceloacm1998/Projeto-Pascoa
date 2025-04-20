@@ -32,6 +32,12 @@ class ConfigViewModel: ViewModel() {
             is OnClickOption -> handleClickOption(event.option)
             is OnCompletedOption -> onCompletedOption(event.option)
             is ConfigViewModelEventState.OnGoBackMenu -> onGoBackMenu()
+            is ConfigViewModelEventState.OnOpenMaps -> viewModelState.value = viewModelState.value.copy(
+                isMaps = true,
+            )
+            is ConfigViewModelEventState.OnCloseMaps -> viewModelState.value = viewModelState.value.copy(
+                isMaps = false,
+            )
         }
     }
 

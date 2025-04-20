@@ -1,5 +1,6 @@
 package com.marcelodev.projetopascoa.feature.config
 
+import android.media.MediaPlayer
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -20,6 +21,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -117,6 +120,8 @@ fun ConfigRoute(
                 .fillMaxSize()
                 .background(Background)
         ) {
+            PlayAudioOnStart()
+
             // MAPA
             AnimatedVisibility(uiState.optionSelected != null && !uiState.isMaps) {
                 Column(
@@ -250,6 +255,24 @@ fun CollectEggs(
                 color = Color.White,
                 modifier = Modifier.padding(8.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun PlayAudioOnStart() {
+    val context = LocalContext.current
+    val mediaPlayer = MediaPlayer.create(context, R.raw.pascoa).apply {
+        isLooping = true
+    }
+
+    LaunchedEffect(Unit) {
+        mediaPlayer.start()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer.release()
         }
     }
 }

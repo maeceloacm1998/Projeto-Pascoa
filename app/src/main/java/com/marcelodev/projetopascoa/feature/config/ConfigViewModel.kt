@@ -31,6 +31,7 @@ class ConfigViewModel: ViewModel() {
             is OnClickHabitListener -> handleClickHabitListener()
             is OnClickOption -> handleClickOption(event.option)
             is OnCompletedOption -> onCompletedOption(event.option)
+            is ConfigViewModelEventState.OnGoBackMenu -> onGoBackMenu()
         }
     }
 
@@ -95,6 +96,15 @@ class ConfigViewModel: ViewModel() {
             optionSelected = null,
             habitListenerMessage = data.menuMessage.message,
             habitListenerGif = data.menuMessage.gifUrl,
+            isMenuHabitListenerDialog = true
+        )
+    }
+
+    private fun onGoBackMenu() {
+        viewModelState.value = viewModelState.value.copy(
+            optionSelected = null,
+            habitListenerMessage = viewModelState.value.data.menuMessage.message,
+            habitListenerGif = viewModelState.value.data.menuMessage.gifUrl,
             isMenuHabitListenerDialog = true
         )
     }

@@ -1,5 +1,6 @@
 package com.marcelodev.projetopascoa.feature.config
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,10 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,8 +35,8 @@ import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.marcelodev.projetopascoa.R
 import com.marcelodev.projetopascoa.components.habitListener.HabitListener
-import com.marcelodev.projetopascoa.components.habitListener.HabitListenerConstants
 import com.marcelodev.projetopascoa.components.options.Options
+import com.marcelodev.projetopascoa.feature.config.ConfigViewModelEventState.OnGoBackMenu
 import com.marcelodev.projetopascoa.ui.theme.Background
 import com.marcelodev.projetopascoa.ui.theme.BackgroundHeader
 import com.marcelodev.projetopascoa.ui.theme.BorderDialog
@@ -111,7 +110,7 @@ fun ConfigRoute(
                 .background(Background)
         ) {
             // MAPA
-            AnimatedVisibility(!uiState.isFistHabitListenerDialog) {
+            AnimatedVisibility(uiState.optionSelected != null) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -148,7 +147,7 @@ fun ConfigRoute(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.6f)
-                        .padding(start = 16.dp, end = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                     optionsList = uiState.data.options,
                     onEvent = onEvent,
                 )
@@ -188,6 +187,9 @@ fun CollectEggs(
     uiState: ConfigViewModelUiState.Steps,
     onEvent: (ConfigViewModelEventState) -> Unit,
 ) {
+    BackHandler {
+        onEvent(OnGoBackMenu)
+    }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -201,7 +203,7 @@ fun CollectEggs(
                 imageLoader = imageLoader
             ),
             contentDescription = null,
-            modifier = Modifier.size(110.dp)
+            modifier = Modifier.size(170.dp)
         )
 
         Spacer(modifier = Modifier.padding(8.dp))

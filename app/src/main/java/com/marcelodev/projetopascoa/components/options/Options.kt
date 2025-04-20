@@ -4,8 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -49,7 +49,7 @@ fun Options(
                     onEvent(ConfigViewModelEventState.OnClickOption(option))
                 },
             )
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.padding(3.dp))
         }
     }
 }
@@ -62,7 +62,8 @@ fun OptionsItem(
 ) {
     Button(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(50.dp),
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = BackgroundDialog,

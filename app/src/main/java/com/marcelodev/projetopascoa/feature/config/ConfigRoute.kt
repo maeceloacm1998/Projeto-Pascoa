@@ -94,7 +94,7 @@ fun ConfigRoute(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Ovos encontrados ${uiState.eggsFound}/10",
+                        text = "Ovos encontrados ${uiState.eggsFound}/18",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = BorderDialog,

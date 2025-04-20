@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.marcelodev.projetopascoa"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.marcelodev.projetopascoa"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -49,7 +50,33 @@ android {
     }
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
+    arg("koin.generateModule", "true")
+}
+
 dependencies {
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp)
+
+    // Compose ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Lottie
+    implementation(libs.lottie.compose)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    implementation("io.coil-kt:coil-compose:2.5.0") // ou a versão mais recente
+    implementation("io.coil-kt:coil-gif:2.2.2")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
